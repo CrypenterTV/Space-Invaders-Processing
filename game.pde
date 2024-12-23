@@ -19,6 +19,9 @@ class Game {
 
   boolean _invadersMovingRight;
 
+  PImage _spaceshipImage;
+  PImage _invaderImage;
+
   Game() {
 
     _board = new Board(this, new PVector(0, 0), 23, 22);
@@ -39,6 +42,9 @@ class Game {
     _randomNextInvaderShotInterval = generateRandomShotInvaderTime();
 
     analyseBoard();
+
+    _spaceshipImage = loadImage("data/spaceship.png");
+    _invaderImage = loadImage("data/red_invader_2.png");
   }
   
   void analyseBoard() {
@@ -284,5 +290,14 @@ class Game {
 
   }
 
-  
+
+  PImage getSpaceshipImage() {
+    return _spaceshipImage;
+  }
+
+
+  PImage getInvaderImage() {
+    return _invaderImage;
+  }
+
 }

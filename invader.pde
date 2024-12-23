@@ -21,10 +21,12 @@ class Invader extends GameEntity {
 
   @Override
   void drawIt() {
-    rectMode(CENTER);
+    /*rectMode(CENTER);
     fill(COLOR_INVADER);
     stroke(3);
-    rect(getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());
+    rect(getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());*/
+    imageMode(CENTER);
+    image(_board.getGame().getInvaderImage(), getPosition().x, getPosition().y, _board.getCellSizeX() * 0.85, _board.getCellSizeY() * 0.85);
   }
 
   boolean isExpired() {
@@ -38,7 +40,7 @@ class Invader extends GameEntity {
 
 
   boolean isReadyToShot() {
-    
+
     if (_cellY + 1 >= _board.getNbCellsY()) {
       return false;
     }

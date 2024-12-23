@@ -16,7 +16,9 @@ class Spaceship extends GameEntity {
   void drawIt() {
     fill(COLOR_SPACESHIP);
     noStroke();
-    ellipse(getPosition().x, getPosition().y, _size, _size);
+    //ellipse(getPosition().x, getPosition().y, _size, _size);
+    imageMode(CENTER);
+    image(_board.getGame().getSpaceshipImage(), getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());
   }
 
   @Override

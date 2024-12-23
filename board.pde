@@ -61,29 +61,14 @@ class Board {
 
         for (int y = 0; y < _cells[x].length; y++) {
 
-            boolean pass = false;
-
             switch (_cells[x][y]) {
 
-                case EMPTY:
-                  fill(COLOR_EMPTY);
-                  break;
-                case SPACESHIP:
-                  fill(COLOR_EMPTY);
-                  break;
-                case INVADER:
-                  pass = true;
-                  break;
                 case OBSTACLE:
                   fill(COLOR_OBSTACLE);
                   break;
-                case BULLET:
-                  pass = true;
-                  break;
+                default:
+                  fill(COLOR_EMPTY);
             }
-
-            if (pass)
-              continue;
 
             //stroke(3);
             noStroke();
