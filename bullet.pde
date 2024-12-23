@@ -33,7 +33,7 @@ class Bullet extends GameEntity {
     TypeCell targetCell = _board.getCell(newCellX, newCellY);
 
     // Lorsque le missile frappe un invader
-    if (targetCell == TypeCell.INVADER && _typeBullet == TypeBullet.SPACESHIP) {
+    if (targetCell.getType() == TypeCell.Type.INVADER && _typeBullet == TypeBullet.SPACESHIP) {
 
         Invader invader = _board.getGame().getInvaderFromCell(newCellX, newCellY);
 

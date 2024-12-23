@@ -1,11 +1,12 @@
 class Invader extends GameEntity {
   
   boolean _expired;
+  int _invaderType;
 
-  Invader(Board board, TypeCell entityType, int cellX, int cellY) {
+  Invader(Board board, TypeCell entityType, int cellX, int cellY, int invaderType) {
 
     super(board, entityType, cellX, cellY);
-
+    _invaderType = invaderType;
   }
 
 
@@ -21,12 +22,15 @@ class Invader extends GameEntity {
 
   @Override
   void drawIt() {
-    /*rectMode(CENTER);
-    fill(COLOR_INVADER);
-    stroke(3);
-    rect(getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());*/
     imageMode(CENTER);
-    image(_board.getGame().getInvaderImage(), getPosition().x, getPosition().y, _board.getCellSizeX() * 0.85, _board.getCellSizeY() * 0.85);
+
+    PImage image = _board.getGame().getImages().getInvaderImage(_invaderType);
+    
+    if (image == null) {
+      return;
+    }
+
+    image(image, getPosition().x, getPosition().y, _board.getCellSizeX() * 0.85, _board.getCellSizeY() * 0.85);
   }
 
   boolean isExpired() {
@@ -49,6 +53,12 @@ class Invader extends GameEntity {
 
     if (underCell != TypeCell.EMPTY && underCell != TypeCell.SPACESHIP) {
       return false;
+    }
+
+    for (int y = _cellY + 1; y < _board.getNbCellsY(); y++) {
+      if (_board.getCell(_cellX, y).getType() == TypeCell.Type.INVADER) {
+        return false;
+      }
     }
 
     return true;

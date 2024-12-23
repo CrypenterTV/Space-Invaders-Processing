@@ -1,10 +1,47 @@
-enum TypeCell {
-  EMPTY,
-  SPACESHIP,
-  INVADER,
-  OBSTACLE,
-  BULLET;
+public enum TypeCell {
+    EMPTY,
+    SPACESHIP,
+    OBSTACLE,
+    BULLET,
+    INVADER_1(Type.INVADER),
+    INVADER_2(Type.INVADER),
+    INVADER_3(Type.INVADER),
+    INVADER_4(Type.INVADER),
+    INVADER_5(Type.INVADER),
+    INVADER_6(Type.INVADER),
+    INVADER_7(Type.INVADER);
+
+    Type _type;
+
+    TypeCell() {
+        _type = null;
+    }
+
+    TypeCell(Type type) {
+        _type = type;
+    }
+
+    Type getType() {
+        if (_type != null) {
+          return _type;
+        } else {
+          return Type.valueOf(this.name());
+        }
+    }
+
+    int getNumber() {
+      if (this.name().startsWith("INVADER_")) {
+          String numberPart = this.name().substring(8); 
+          return Integer.parseInt(numberPart);
+      }
+      return -1;
+    }
+
+    enum Type {
+        EMPTY, SPACESHIP, OBSTACLE, BULLET, INVADER;
+    }
 }
+
 
 class Board {
   
@@ -61,15 +98,20 @@ class Board {
 
         for (int y = 0; y < _cells[x].length; y++) {
 
+            boolean pass = false;
+
             switch (_cells[x][y]) {
 
                 case OBSTACLE:
                   fill(COLOR_OBSTACLE);
                   break;
                 default:
+                  pass = true;
                   fill(COLOR_EMPTY);
             }
 
+            if (pass)
+              continue;
             //stroke(3);
             noStroke();
             rect(x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
@@ -98,13 +140,17 @@ class Board {
 
 
           for (int x = 0; x < _nbCellsX; x++) {
+            
+              char loopedChar = lines[y + 1].charAt(x);
 
-              switch (lines[y + 1].charAt(x)) {
+              if (loopedChar >= '1' && loopedChar <= '7') {
+                _cells[x][y] = TypeCell.valueOf("INVADER_" + loopedChar);
+                continue;
+              }
+
+              switch (loopedChar) {
                   case 'X':
                       _cells[x][y] = TypeCell.OBSTACLE;
-                      break;
-                  case 'I':
-                      _cells[x][y] = TypeCell.INVADER;
                       break;
                   case 'S':
                       _cells[x][y] = TypeCell.SPACESHIP;

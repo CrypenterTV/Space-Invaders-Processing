@@ -19,13 +19,16 @@ class Game {
 
   boolean _invadersMovingRight;
 
-  PImage _spaceshipImage;
-  PImage _invaderImage;
+  Images _images;
+
+  boolean _pause;
+
 
   Game() {
 
-    _board = new Board(this, new PVector(0, 0), 23, 22);
-    _board.loadFromFile("level1");
+    //_board = new Board(this, new PVector(0, 0), 23, 22);
+    _board = new Board(this, new PVector(0, 0), 25, 24);
+    _board.loadFromFile("level2");
 
     _score = 0;
     _lifes = START_LIFES;
@@ -43,8 +46,10 @@ class Game {
 
     analyseBoard();
 
-    _spaceshipImage = loadImage("data/spaceship.png");
-    _invaderImage = loadImage("data/red_invader_2.png");
+    _images = new Images("data/");
+
+    _pause = false;
+
   }
   
   void analyseBoard() {
@@ -53,12 +58,14 @@ class Game {
 
       for (int y = 0; y < _board.getNbCellsY(); y++) {
 
-        if (_board.getCell(x, y) == TypeCell.SPACESHIP) {
+        TypeCell typeCell = _board.getCell(x, y);
+
+        if (typeCell == TypeCell.SPACESHIP) {
           _spaceship = new Spaceship(_board, TypeCell.SPACESHIP, x, y);
         }
 
-        else if (_board.getCell(x, y) == TypeCell.INVADER) {
-          _invadersList.add(new Invader(_board, TypeCell.INVADER, x, y));
+        else if (typeCell.getType() == TypeCell.Type.INVADER) {
+          _invadersList.add(new Invader(_board, typeCell, x, y, typeCell.getNumber()));
         }
 
       }
@@ -69,7 +76,8 @@ class Game {
 
   void update() {
     
-    
+    if (_pause)
+      return;
     
     // Actualisation de tous les missiles.
     for (int i = 0; i < _bulletsList.size(); i++) {
@@ -130,6 +138,11 @@ class Game {
   
   void drawIt() {
 
+    if (_pause)
+      return;
+
+    background(getImages().getBackgroundImage(6));
+
     _board.drawIt();
 
 
@@ -171,6 +184,8 @@ class Game {
 
       _bulletsList.add(new Bullet(_board, TypeCell.BULLET, _spaceship.getCellX(), _spaceship.getCellY() - 1, TypeBullet.SPACESHIP));
     
+    } else if (key == 'p') {
+      _pause = !_pause;
     }
       
   }
@@ -278,6 +293,7 @@ class Game {
     _score += value;
   }
 
+
   void loseLife() {
     
     _lifes -= 1;
@@ -291,13 +307,9 @@ class Game {
   }
 
 
-  PImage getSpaceshipImage() {
-    return _spaceshipImage;
+  Images getImages() {
+    return _images;
   }
 
-
-  PImage getInvaderImage() {
-    return _invaderImage;
-  }
 
 }

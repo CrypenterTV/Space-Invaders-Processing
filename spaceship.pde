@@ -18,7 +18,7 @@ class Spaceship extends GameEntity {
     noStroke();
     //ellipse(getPosition().x, getPosition().y, _size, _size);
     imageMode(CENTER);
-    image(_board.getGame().getSpaceshipImage(), getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());
+    image(_board.getGame().getImages().getSpaceshipImage(), getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());
   }
 
   @Override
