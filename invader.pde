@@ -17,9 +17,6 @@ class Invader extends GameEntity {
   @Override
   void update() {
 
-
-    //_board.getGame().getBulletsList().add(new Bullet(_board, TypeCell.BULLET, _cellX, _cellY + 1, TypeBullet.INVADER));
-
   }
 
   @Override
@@ -41,6 +38,7 @@ class Invader extends GameEntity {
 
 
   boolean isReadyToShot() {
+    
     if (_cellY + 1 >= _board.getNbCellsY()) {
       return false;
     }

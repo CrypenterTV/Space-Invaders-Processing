@@ -6,12 +6,19 @@ enum TypeBullet {
 class Bullet extends GameEntity {
   
   TypeBullet _typeBullet;
+  int _moveInterval;
 
   Bullet(Board board, TypeCell entityType, int cellX, int cellY, TypeBullet typeBullet) {
 
     super(board, entityType, cellX, cellY);
 
     _typeBullet = typeBullet;
+
+    _moveInterval = MOVE_INTERVAL_BULLET_SPACESHIP;
+
+    if (_typeBullet == TypeBullet.INVADER) {
+      _moveInterval = MOVE_INTERVAL_BULLET_INVADER;
+    }
 
   }
 
@@ -35,7 +42,19 @@ class Bullet extends GameEntity {
         _board.setCell(newCellX, newCellY, TypeCell.EMPTY); 
         invader.setExpired();
         setExpired();
+
+        _board.getGame().addScore(SCORE_KILL);
+
         return false;
+    }
+
+    // Lorsque le missile frappe le vaisseau
+    if (targetCell == TypeCell.SPACESHIP) {
+      
+      _board.getGame().loseLife();
+      
+      setExpired();
+
     }
 
     if (targetCell == TypeCell.OBSTACLE) {
@@ -49,7 +68,7 @@ class Bullet extends GameEntity {
   @Override
   void update() {
 
-    if (millis() - _lastUpdateTime < MOVE_INTERVAL_BULLET) {
+    if (millis() - _lastUpdateTime < _moveInterval) {
       return;
     }
 
@@ -70,8 +89,15 @@ class Bullet extends GameEntity {
 
   @Override
   void drawIt() {
+
     rectMode(CENTER);
-    fill(COLOR_BULLET);
+
+    if (_typeBullet == TypeBullet.SPACESHIP) {
+      fill(COLOR_BULLET_SPACESHIP);
+    } else if (_typeBullet == TypeBullet.INVADER) {
+      fill(COLOR_BULLET_INVADER);
+    }
+
     noStroke();
     rect(getPosition().x, getPosition().y, 0.25 * _board.getCellSizeX(), 0.7 * _board.getCellSizeY());
   }

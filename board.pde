@@ -85,7 +85,8 @@ class Board {
             if (pass)
               continue;
 
-            stroke(3);
+            //stroke(3);
+            noStroke();
             rect(x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
         }
     }
@@ -126,7 +127,7 @@ class Board {
                   default:
                       _cells[x][y] = TypeCell.EMPTY;
               }
-              
+
           }
 
       }

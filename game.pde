@@ -15,12 +15,17 @@ class Game {
   int _lastShotSpaceshipTime;
   int _lastShotInvaderTime;
 
+  int _randomNextInvaderShotInterval;
+
   boolean _invadersMovingRight;
 
   Game() {
 
     _board = new Board(this, new PVector(0, 0), 23, 22);
     _board.loadFromFile("level1");
+
+    _score = 0;
+    _lifes = START_LIFES;
 
     _bulletsList = new ArrayList<Bullet>();
     _invadersList = new ArrayList<Invader>();
@@ -29,6 +34,9 @@ class Game {
     
     _lastShotSpaceshipTime = millis();
     _lastUpdateTime = millis();
+    _lastShotInvaderTime = millis();
+
+    _randomNextInvaderShotInterval = generateRandomShotInvaderTime();
 
     analyseBoard();
   }
@@ -73,11 +81,11 @@ class Game {
     // Actualisation de tous les invaders.
     for (int i = 0; i < _invadersList.size(); i++) {
       
-      Invader loopedInvader = _invadersList.get(i);
+      Invader invader = _invadersList.get(i);
 
-      loopedInvader.update();
+      invader.update();
 
-      if (loopedInvader.isExpired()) {
+      if (invader.isExpired()) {
         _invadersList.remove(i);
       }
       
@@ -85,10 +93,40 @@ class Game {
 
     updateInvaders();
 
+    // Gestion des tirs des invaders.
+    if (millis() - _lastShotInvaderTime < _randomNextInvaderShotInterval) {
+      return;
+    }
+
+    _lastShotInvaderTime = millis();
+    _randomNextInvaderShotInterval = generateRandomShotInvaderTime();
+
+    ArrayList<Invader> readyToShotInvaders = new ArrayList<Invader>();
+
+    for (Invader invader : _invadersList) {
+      if (invader.isReadyToShot()) {
+        readyToShotInvaders.add(invader);
+      }
+    }
+
+    if (readyToShotInvaders.size() == 0) {
+      return;
+    }
+
+    int randomIndex = floor(random(0, readyToShotInvaders.size()));
+
+    Invader selectedInvader = readyToShotInvaders.get(randomIndex);
+
+    getBulletsList().add(new Bullet(_board, TypeCell.BULLET, selectedInvader.getCellX(), selectedInvader.getCellY() + 1, TypeBullet.INVADER));
+
+
   }
   
   void drawIt() {
+
     _board.drawIt();
+
+
     if (_spaceship != null)
       _spaceship.drawIt();
     
@@ -99,6 +137,11 @@ class Game {
     for (Bullet bullet : _bulletsList) {
       bullet.drawIt();
     }
+
+    textSize(40);
+    fill(0);
+    text("Score: " + _score, 5, 50);
+    text("Vie(s): " + _lifes, width / 2 - 50, height - 10);
   }
   
 
@@ -212,6 +255,33 @@ class Game {
 
   ArrayList<Bullet> getBulletsList() {
     return _bulletsList;
+  }
+
+  
+  int generateRandomShotInvaderTime() {
+    return floor(random(MIN_INTERVAL_INVADER_SHOT, MAX_INTERVAL_INVADER_SHOT + 1));
+  }
+
+
+  Spaceship getSpaceship() {
+    return _spaceship;
+  }
+
+
+  void addScore(int value) {
+    _score += value;
+  }
+
+  void loseLife() {
+    
+    _lifes -= 1;
+
+    if (_lifes <= 0) {
+
+      println("PARTIE TERMINEE !");
+
+    }
+
   }
 
   
