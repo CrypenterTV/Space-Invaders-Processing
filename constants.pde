@@ -7,6 +7,8 @@ final int GAME_STATUS = 2;
 final int START_LIFES = 3;
 final int SCORE_KILL = 10;
 
+final String MAIN_TITLE = "Space Invaders";
+
 // Couleurs
 final color COLOR_EMPTY = color(255);
 final color COLOR_SPACESHIP = color(0, 0, 255);

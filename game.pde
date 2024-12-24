@@ -26,13 +26,22 @@ class Game {
 
   Game() {
 
-    //_board = new Board(this, new PVector(0, 0), 23, 22);
-    _board = new Board(this, new PVector(0, 0), 25, 24);
-    _board.loadFromFile("level2");
+    _board = new Board(this, "levels/level1.txt", new PVector(0, 0));
+    _levelName = "Niveau 1";
 
     _score = 0;
     _lifes = START_LIFES;
 
+    resetBoard();
+
+    _images = new Images("data/");
+
+    _pause = false;
+
+  }
+
+  void resetBoard() {
+    
     _bulletsList = new ArrayList<Bullet>();
     _invadersList = new ArrayList<Invader>();
 
@@ -45,10 +54,6 @@ class Game {
     _randomNextInvaderShotInterval = generateRandomShotInvaderTime();
 
     analyseBoard();
-
-    _images = new Images("data/");
-
-    _pause = false;
 
   }
   
@@ -194,6 +199,9 @@ class Game {
     
     } else if (key == 'p') {
       _pause = !_pause;
+    } else if (key == 27) {
+      gameState = MAIN_MENU_STATUS;
+      key = 0;
     }
       
   }
@@ -282,6 +290,15 @@ class Game {
   }
 
 
+  String getLevelName() {
+    return _levelName;
+  }
+
+  void setLevelName(String levelName) {
+    _levelName = levelName;
+  }
+
+
   ArrayList<Bullet> getBulletsList() {
     return _bulletsList;
   }
@@ -299,6 +316,11 @@ class Game {
 
   void addScore(int value) {
     _score += value;
+  }
+
+  void changeBoard(Board board) {
+    _board = board;
+    resetBoard();
   }
 
 

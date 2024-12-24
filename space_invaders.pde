@@ -13,6 +13,10 @@ void settings() {
 
 
 void setup() {
+
+  surface.setTitle(MAIN_TITLE);
+  surface.setResizable(false);
+
   gameState = MAIN_MENU_STATUS;
   game = new Game();
 
@@ -22,12 +26,13 @@ void setup() {
     void onClick(int mousePressed) {
       gameState = GAME_STATUS;
       cursor(ARROW);
+      surface.setTitle(MAIN_TITLE + " : " + game.getLevelName());
     }
   }));
 
   mainMenu.addButton(new Button(new PVector(width / 3, 3 * height / 9), width / 3, width / 9, "Charger Partie", new ButtonAction() {
     void onClick(int mousePressed) {
-      println("Bouton 2");
+      selectInput("Sélectionnez le niveau :", "levelSelected");
     }
   }));
 
@@ -75,5 +80,22 @@ void mousePressed() {
   if (gameState == MAIN_MENU_STATUS) {
     mainMenu.handleMouse(mouseButton);
   }
+
+}
+
+void levelSelected(File selection) {
+
+  if (selection == null) {
+    return;
+  }
+
+  gameState = GAME_STATUS;
+  cursor(ARROW);
+
+  game.changeBoard(new Board(game, selection.getAbsolutePath(), new PVector(0, 0)));
+  game.setLevelName(selection.getAbsolutePath());
+
+  surface.setTitle(MAIN_TITLE + " : " + game.getLevelName());
+  
 
 }

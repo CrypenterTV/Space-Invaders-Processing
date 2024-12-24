@@ -54,33 +54,86 @@ class Board {
   
   float _cellSizeX;
   float _cellSizeY;
+
+  String _fileName;
   
-  Board(Game game, PVector pos, int nbX, int nbY) {
+  Board(Game game, String fileName, PVector pos) {
 
     _game = game;
 
+    _fileName = fileName;
+
     _position = pos.copy();
-    
-    _nbCellsX = nbX;
-    _nbCellsY = nbY;
+
+    loadFromFile();
     
     _cellSizeX = (float) width / _nbCellsX;
     _cellSizeY = (float) height / _nbCellsY; 
+
+  }
+
+
+
+  void loadFromFile() {
     
-    _cells = new TypeCell[_nbCellsX][_nbCellsY];
-
-    // Initialisation du plateau de jeu vide.
-    for(int x = 0; x < _nbCellsX; x++) {
+    try {
       
-      for(int y = 0; y < _nbCellsY; y++) {
+      String[] lines = loadStrings(_fileName);
 
-        _cells[x][y] = TypeCell.EMPTY;
+      assert lines.length > 1;
 
-      } 
+      _nbCellsY = lines.length - 1;
+      _nbCellsX = lines[1].length();
+
+      _cells = new TypeCell[_nbCellsX][_nbCellsY];
+      
+      if (lines.length - 1 != _nbCellsY) {
+        println("Le fichier " + _fileName + " ne correspond pas aux dimensions du tableau.");
+        return;
+      }
+      
+
+      for (int y = 0; y < _nbCellsY; y++) {
+
+          if (lines[y + 1].length() != _nbCellsX) {
+            println("La ligne " + (y - 1) + " du fichier " + _fileName + " a une longueur incorrecte.");
+            return;
+          }
+
+
+          for (int x = 0; x < _nbCellsX; x++) {
+            
+              char loopedChar = lines[y + 1].charAt(x);
+
+              if (loopedChar >= '1' && loopedChar <= '7') {
+                _cells[x][y] = TypeCell.valueOf("INVADER_" + loopedChar);
+                continue;
+              }
+
+              switch (loopedChar) {
+                  case 'X':
+                      _cells[x][y] = TypeCell.OBSTACLE;
+                      break;
+                  case 'S':
+                      _cells[x][y] = TypeCell.SPACESHIP;
+                      break;
+                  default:
+                      _cells[x][y] = TypeCell.EMPTY;
+              }
+
+          }
+
+
+      }
+      
+    } catch (Exception e) {
+    
+      println("Erreur de lecture du fichier." + e.toString());
+      exit();
 
     }
 
-  }
+  }  
   
 
 
@@ -109,58 +162,6 @@ class Board {
     }
   }
   
-  void loadFromFile(String levelName) {
-    
-    try {
-      
-      String[] lines = loadStrings("levels/" + levelName + ".txt");
-      
-      if (lines.length - 1 != _nbCellsY) {
-        println("Le fichier " + levelName + " ne correspond pas aux dimensions du tableau.");
-        return;
-      }
-      
-
-      for (int y = 0; y < _nbCellsY; y++) {
-
-          if (lines[y + 1].length() != _nbCellsX) {
-            println("La ligne " + (y - 1) + " du fichier " + levelName + " a une longueur incorrecte.");
-            return;
-          }
-
-
-          for (int x = 0; x < _nbCellsX; x++) {
-            
-              char loopedChar = lines[y + 1].charAt(x);
-
-              if (loopedChar >= '1' && loopedChar <= '7') {
-                _cells[x][y] = TypeCell.valueOf("INVADER_" + loopedChar);
-                continue;
-              }
-
-              switch (loopedChar) {
-                  case 'X':
-                      _cells[x][y] = TypeCell.OBSTACLE;
-                      break;
-                  case 'S':
-                      _cells[x][y] = TypeCell.SPACESHIP;
-                      break;
-                  default:
-                      _cells[x][y] = TypeCell.EMPTY;
-              }
-
-          }
-
-      }
-      
-    } catch (Exception e) {
-      
-      println("Erreur de lecture du fichier de niveau : " + e.toString());
-      
-    }
-
-  }
-
 
   void exportToFile(String filePath) {
 
@@ -177,7 +178,7 @@ class Board {
         if (currentCell.getType().equals(TypeCell.Type.INVADER)) {
           line.append(String.valueOf(currentCell.getNumber()));
         } else if (currentCell.equals(TypeCell.OBSTACLE)) {
-          line.append("O");
+          line.append("X");
         } else if (currentCell.equals(TypeCell.SPACESHIP)) {
           line.append("S");
         } else {
