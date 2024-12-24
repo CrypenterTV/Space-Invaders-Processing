@@ -7,12 +7,12 @@ class Spaceship extends GameEntity {
     _size = 0.8 * min(board.getCellSizeX(), board.getCellSizeY());
   }
 
-  @Override
+
   void update() {
 
   }
 
-  @Override
+
   void drawIt() {
     fill(COLOR_SPACESHIP);
     noStroke();
@@ -21,7 +21,7 @@ class Spaceship extends GameEntity {
     image(_board.getGame().getImages().getSpaceshipImage(), getPosition().x, getPosition().y, _board.getCellSizeX(), _board.getCellSizeY());
   }
 
-  @Override
+
   boolean beforeMove(int newCellX, int newCellY) {
     return true;
   }

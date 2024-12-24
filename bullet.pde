@@ -22,7 +22,6 @@ class Bullet extends GameEntity {
 
   }
 
-  @Override
   boolean beforeMove(int newCellX, int newCellY) {
 
     if (newCellX < 0 || newCellY < 0 || newCellX >= _board.getNbCellsX() || newCellY >= _board.getNbCellsY()) {
@@ -65,7 +64,7 @@ class Bullet extends GameEntity {
     return targetCell == TypeCell.EMPTY || targetCell == TypeCell.BULLET;
   } 
 
-  @Override
+
   void update() {
 
     if (millis() - _lastUpdateTime < _moveInterval) {
@@ -87,7 +86,7 @@ class Bullet extends GameEntity {
 
   }
 
-  @Override
+
   void drawIt() {
 
     rectMode(CENTER);

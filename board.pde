@@ -161,6 +161,45 @@ class Board {
 
   }
 
+
+  void exportToFile(String filePath) {
+
+    StringBuilder output = new StringBuilder();
+
+    for (int y = 0; y < _nbCellsY; y++) {
+      
+      StringBuilder line = new StringBuilder();
+
+      for (int x = 0; x < _nbCellsX; x++) {
+        
+        TypeCell currentCell = _cells[x][y];
+
+        if (currentCell.getType().equals(TypeCell.Type.INVADER)) {
+          line.append(String.valueOf(currentCell.getNumber()));
+        } else if (currentCell.equals(TypeCell.OBSTACLE)) {
+          line.append("O");
+        } else if (currentCell.equals(TypeCell.SPACESHIP)) {
+          line.append("S");
+        } else {
+          line.append("E");
+        }
+
+      }
+
+      if (y < _cells.length - 1) {
+        line.append("\n");
+      }
+
+      output.append(line);
+    }
+
+    println(output.toString());
+
+    String[] outputLines = { output.toString() };
+
+    saveStrings(filePath, outputLines);
+  }
+
   void displayBoard() {
 
     for(int x = 0; x < _nbCellsX; x++) {

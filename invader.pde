@@ -10,17 +10,17 @@ class Invader extends GameEntity {
   }
 
 
-  @Override
+
   boolean beforeMove(int newCellX, int newCellY) {
     return true;
   }
 
-  @Override
+
   void update() {
 
   }
 
-  @Override
+
   void drawIt() {
     imageMode(CENTER);
 
