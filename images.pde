@@ -12,6 +12,8 @@ class Images {
 
     PImage _obstacleImage;
 
+    PImage _mainTitleImage;
+
     Images(String folderName) {
         _folderName = folderName;
         loadImages();
@@ -35,6 +37,8 @@ class Images {
         _lifeImage = loadImage(_folderName + "heart.png");
 
         _obstacleImage = loadImage(_folderName + "obstacle.png");
+
+        _mainTitleImage = loadImage(_folderName + "main_title.png");
 
         for(int i = 1; i < _backgroundImages.length + 1; i++) {
             _backgroundImages[i - 1] = loadImage(_folderName + "background" + i + ".jpg");
@@ -75,6 +79,10 @@ class Images {
 
     PImage getObstacleImage() {
         return _obstacleImage;
+    }
+
+    PImage getMainTitleImage() {
+        return _mainTitleImage;
     }
 
 

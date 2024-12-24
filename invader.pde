@@ -12,6 +12,7 @@ class Invader extends GameEntity {
 
 
   boolean beforeMove(int newCellX, int newCellY) {
+
     return true;
   }
 
@@ -24,7 +25,7 @@ class Invader extends GameEntity {
   void drawIt() {
     imageMode(CENTER);
 
-    PImage image = _board.getGame().getImages().getInvaderImage(_invaderType);
+    PImage image = allImages.getInvaderImage(_invaderType);
     
     if (image == null) {
       return;

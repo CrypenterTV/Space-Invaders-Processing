@@ -46,7 +46,7 @@ abstract class GameEntity {
             return false;
         }
 
-        if (_board.getCell(newCellX, newCellY) != TypeCell.EMPTY && _board.getCell(newCellX, newCellY) != TypeCell.BULLET) {
+        if (_board.getCell(newCellX, newCellY) != TypeCell.EMPTY && _board.getCell(newCellX, newCellY).getType() != TypeCell.Type.BULLET) {
             return false;
         }
 

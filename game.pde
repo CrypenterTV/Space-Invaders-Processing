@@ -19,13 +19,12 @@ class Game {
 
   boolean _invadersMovingRight;
 
-  Images _images;
-
   boolean _pause;
 
 
   Game() {
 
+    // Niveau n°1 par défaut.
     _board = new Board(this, "levels/level1.txt", new PVector(0, 0));
     _levelName = "Niveau 1";
 
@@ -33,8 +32,6 @@ class Game {
     _lifes = START_LIFES;
 
     resetBoard();
-
-    _images = new Images("data/");
 
     _pause = false;
 
@@ -71,6 +68,10 @@ class Game {
 
         else if (typeCell.getType() == TypeCell.Type.INVADER) {
           _invadersList.add(new Invader(_board, typeCell, x, y, typeCell.getNumber()));
+        }
+
+        else if (typeCell.getType() == TypeCell.Type.BULLET) {
+          _bulletsList.add(new Bullet(_board, typeCell, x, y));
         }
 
       }
@@ -136,7 +137,7 @@ class Game {
 
     Invader selectedInvader = readyToShotInvaders.get(randomIndex);
 
-    getBulletsList().add(new Bullet(_board, TypeCell.BULLET, selectedInvader.getCellX(), selectedInvader.getCellY() + 1, TypeBullet.INVADER));
+    _bulletsList.add(new Bullet(_board, TypeCell.BULLET_2, selectedInvader.getCellX(), selectedInvader.getCellY() + 1));
 
 
   }
@@ -146,7 +147,7 @@ class Game {
     if (_pause)
       return;
 
-    background(getImages().getBackgroundImage(6));
+    background(allImages.getBackgroundImage(6));
 
     _board.drawIt();
 
@@ -172,7 +173,7 @@ class Game {
     // Affichage des coeurs.
     imageMode(CENTER);
     for(int i = 0; i < _lifes; i++) {
-      image(_images.getLifeImage(), width - (0.7 * _board.getCellSizeX() + _board.getCellSizeX() * i + i * 0.08 * _board.getCellSizeX()), 0.5 * _board.getCellSizeY(), _board.getCellSizeX(), _board.getCellSizeY());
+      image(allImages.getLifeImage(), width - (0.7 * _board.getCellSizeX() + _board.getCellSizeX() * i + i * 0.08 * _board.getCellSizeX()), 0.5 * _board.getCellSizeY(), _board.getCellSizeX(), _board.getCellSizeY());
     }
   }
   
@@ -195,12 +196,10 @@ class Game {
 
       _lastShotSpaceshipTime = millis();
 
-      _bulletsList.add(new Bullet(_board, TypeCell.BULLET, _spaceship.getCellX(), _spaceship.getCellY() - 1, TypeBullet.SPACESHIP));
+      _bulletsList.add(new Bullet(_board, TypeCell.BULLET_1, _spaceship.getCellX(), _spaceship.getCellY() - 1));
     
-    } else if (key == 'p') {
-      _pause = !_pause;
-    } else if (key == 27) {
-      gameState = MAIN_MENU_STATUS;
+    } else if (key == 27) { // Echap
+      gameState = PAUSE_MENU_STATUS;
       key = 0;
     }
       
@@ -213,6 +212,20 @@ class Game {
 
       if (invader.getCellX() == x && invader.getCellY() == y) {
         return invader;
+      }
+
+    }
+
+    return null;
+  }
+
+
+  Bullet getBulletFromCell(int x, int y) {
+
+    for (Bullet bullet : _bulletsList) {
+      
+      if (bullet.getCellX() == x && bullet.getCellY() == y) {
+        return bullet;
       }
 
     }
@@ -339,9 +352,24 @@ class Game {
   }
 
 
-  Images getImages() {
-    return _images;
+  void resetTimers() {
+      _lastUpdateTime = millis();
+      _lastShotSpaceshipTime = millis();
+      _lastShotInvaderTime = millis();
   }
+
+  void setPause(boolean pause) {
+    _pause = pause;
+  }
+
+  boolean isInPause() {
+    return _pause;
+  }
+
+  Board getBoard() {
+    return _board;
+  }
+
 
 
 }

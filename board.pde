@@ -2,7 +2,8 @@ public enum TypeCell {
     EMPTY,
     SPACESHIP,
     OBSTACLE,
-    BULLET,
+    BULLET_1(Type.BULLET),
+    BULLET_2(Type.BULLET),
     INVADER_1(Type.INVADER),
     INVADER_2(Type.INVADER),
     INVADER_3(Type.INVADER),
@@ -80,9 +81,19 @@ class Board {
       
       String[] lines = loadStrings(_fileName);
 
+      // Ne pas prendre en compte les lignes vides 
+      int initialLength = lines.length - 1;
+      for (String line : lines) {
+        if (line.length() == 0) {
+          initialLength--;
+        }
+      }
+
       assert lines.length > 1;
 
-      _nbCellsY = lines.length - 1;
+      _game.setLevelName(lines[0]);
+
+      _nbCellsY = initialLength;
       _nbCellsX = lines[1].length();
 
       _cells = new TypeCell[_nbCellsX][_nbCellsY];
@@ -112,13 +123,19 @@ class Board {
 
               switch (loopedChar) {
                   case 'X':
-                      _cells[x][y] = TypeCell.OBSTACLE;
-                      break;
+                    _cells[x][y] = TypeCell.OBSTACLE;
+                    break;
                   case 'S':
-                      _cells[x][y] = TypeCell.SPACESHIP;
-                      break;
+                    _cells[x][y] = TypeCell.SPACESHIP;
+                    break;
+                  case 'B':
+                    _cells[x][y] = TypeCell.BULLET_1;
+                    break;
+                  case 'D':
+                    _cells[x][y] = TypeCell.BULLET_2;
+                    break;
                   default:
-                      _cells[x][y] = TypeCell.EMPTY;
+                    _cells[x][y] = TypeCell.EMPTY;
               }
 
           }
@@ -155,7 +172,7 @@ class Board {
 
             if (_cells[x][y] == TypeCell.OBSTACLE) {
               imageMode(CORNER);
-              image(_game.getImages().getObstacleImage(), x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
+              image(allImages.getObstacleImage(), x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
             }
 
         }
@@ -163,9 +180,12 @@ class Board {
   }
   
 
-  void exportToFile(String filePath) {
+  void exportToFile(String filePath, String gameName) {
 
     StringBuilder output = new StringBuilder();
+
+    output.append(gameName);
+    output.append("\n");
 
     for (int y = 0; y < _nbCellsY; y++) {
       
@@ -176,18 +196,34 @@ class Board {
         TypeCell currentCell = _cells[x][y];
 
         if (currentCell.getType().equals(TypeCell.Type.INVADER)) {
+
           line.append(String.valueOf(currentCell.getNumber()));
+
         } else if (currentCell.equals(TypeCell.OBSTACLE)) {
+
           line.append("X");
+
         } else if (currentCell.equals(TypeCell.SPACESHIP)) {
+
           line.append("S");
+
+        } else if (currentCell.equals(TypeCell.BULLET_1)) {
+
+          line.append("B");
+
+        } else if (currentCell.equals(TypeCell.BULLET_2)) {
+
+          line.append("D");
+
         } else {
+
           line.append("E");
+
         }
 
       }
 
-      if (y < _cells.length - 1) {
+      if (y < _nbCellsY - 1) {
         line.append("\n");
       }
 

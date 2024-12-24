@@ -1,5 +1,5 @@
 interface ButtonAction {
-    void onClick(int mouseButton);
+    void onClick(int mb);
 }
 
 class Button {
@@ -15,13 +15,16 @@ class Button {
 
     ButtonAction _buttonAction;
 
-    Button(PVector position, int buttonWidth, int buttonHeight, String label, ButtonAction buttonAction) {
+    color _textColor;
+
+    Button(PVector position, int buttonWidth, int buttonHeight, String label, color textColor, ButtonAction buttonAction) {
         _position = position;
         _buttonWidth = buttonWidth;
         _buttonHeight = buttonHeight;
         _label = label;
         _hovered = false;
         _buttonAction = buttonAction;
+        _textColor = textColor;
     }
 
     void update() {
@@ -54,13 +57,13 @@ class Button {
 
         textSize(30);
         
-        fill(0);
+        fill(_textColor);
         text(_label, _position.x + _buttonWidth / 2, _position.y + _buttonHeight / 2);
 
 
     }
 
-    void onClick(int mouseButton) {
+    void onClick(int mb) {
 
         update();
         
@@ -68,7 +71,7 @@ class Button {
             return;
         }
 
-        _buttonAction.onClick(mouseButton);
+        _buttonAction.onClick(mb);
     }
 
     boolean isHovered() {
