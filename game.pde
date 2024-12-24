@@ -157,10 +157,18 @@ class Game {
       bullet.drawIt();
     }
 
+    textAlign(LEFT);
+
     textSize(40);
-    fill(0);
-    text("Score: " + _score, 5, 50);
-    text("Vie(s): " + _lifes, width / 2 - 50, height - 10);
+
+    fill(64, 196, 27);
+    text("Score: " + _score, 5, 40);
+    
+    // Affichage des coeurs.
+    imageMode(CENTER);
+    for(int i = 0; i < _lifes; i++) {
+      image(_images.getLifeImage(), width - (0.7 * _board.getCellSizeX() + _board.getCellSizeX() * i + i * 0.08 * _board.getCellSizeX()), 0.5 * _board.getCellSizeY(), _board.getCellSizeX(), _board.getCellSizeY());
+    }
   }
   
 
@@ -299,8 +307,10 @@ class Game {
     _lifes -= 1;
 
     if (_lifes <= 0) {
-
-      println("PARTIE TERMINEE !");
+      
+      update();
+      drawIt();
+      _pause = true;
 
     }
 

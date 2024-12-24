@@ -99,7 +99,7 @@ class Bullet extends GameEntity {
     }
 
     noStroke();
-    rect(getPosition().x, getPosition().y, 0.25 * _board.getCellSizeX(), 0.7 * _board.getCellSizeY());
+    rect(getPosition().x, getPosition().y, 0.25 * _board.getCellSizeX(), 0.7 * _board.getCellSizeY(), 20);
   }
 
 

@@ -8,6 +8,10 @@ class Images {
 
     PImage[] _backgroundImages;
 
+    PImage _lifeImage;
+
+    PImage _obstacleImage;
+
     Images(String folderName) {
         _folderName = folderName;
         loadImages();
@@ -27,6 +31,10 @@ class Images {
         _invaderImages[7] = loadImage(_folderName + "green_invader_2.png");
 
         _backgroundImages = new PImage[7];
+
+        _lifeImage = loadImage(_folderName + "heart.png");
+
+        _obstacleImage = loadImage(_folderName + "obstacle.png");
 
         for(int i = 1; i < _backgroundImages.length + 1; i++) {
             _backgroundImages[i - 1] = loadImage(_folderName + "background" + i + ".jpg");
@@ -57,6 +65,16 @@ class Images {
 
         return _backgroundImages[i - 1];
 
+    }
+
+
+    PImage getLifeImage() {
+        return _lifeImage;
+    }
+
+
+    PImage getObstacleImage() {
+        return _obstacleImage;
     }
 
 

@@ -100,21 +100,11 @@ class Board {
 
             boolean pass = false;
 
-            switch (_cells[x][y]) {
-
-                case OBSTACLE:
-                  fill(COLOR_OBSTACLE);
-                  break;
-                default:
-                  pass = true;
-                  fill(COLOR_EMPTY);
+            if (_cells[x][y] == TypeCell.OBSTACLE) {
+              imageMode(CORNER);
+              image(_game.getImages().getObstacleImage(), x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
             }
 
-            if (pass)
-              continue;
-            //stroke(3);
-            noStroke();
-            rect(x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
         }
     }
   }
