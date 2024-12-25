@@ -168,8 +168,6 @@ class Board {
 
         for (int y = 0; y < _cells[x].length; y++) {
 
-            boolean pass = false;
-
             if (_cells[x][y] == TypeCell.OBSTACLE) {
               imageMode(CORNER);
               image(allImages.getObstacleImage(), x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);

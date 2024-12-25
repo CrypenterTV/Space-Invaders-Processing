@@ -12,7 +12,6 @@ class Invader extends GameEntity {
 
 
   boolean beforeMove(int newCellX, int newCellY) {
-
     return true;
   }
 

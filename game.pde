@@ -14,12 +14,21 @@ class Game {
   int _lastUpdateTime;
   int _lastShotSpaceshipTime;
   int _lastShotInvaderTime;
+  int _levelStartTime;
+
+  boolean _customGame;
+
+  int _levelNumber;
 
   int _randomNextInvaderShotInterval;
 
   boolean _invadersMovingRight;
 
   boolean _pause;
+
+  int _moveIntervalInvader;
+  int _minIntervalInvaderShot;
+  int _maxIntervalInvaderShot;
 
 
   Game() {
@@ -28,8 +37,16 @@ class Game {
     _board = new Board(this, "levels/level1.txt", new PVector(0, 0));
     _levelName = "Niveau 1";
 
+    _levelNumber = 1;
     _score = 0;
     _lifes = START_LIFES;
+    _customGame = false;
+
+    _moveIntervalInvader = MOVE_INTERVAL_INVADER;
+    _minIntervalInvaderShot = MIN_INTERVAL_INVADER_SHOT;
+    _maxIntervalInvaderShot = MAX_INTERVAL_INVADER_SHOT;
+
+    _levelStartTime = millis();
 
     resetBoard();
 
@@ -84,6 +101,10 @@ class Game {
     
     if (_pause)
       return;
+
+    if (millis() - _levelStartTime < LEVEL_START_DELAY) {
+      return;
+    }
     
     // Actualisation de tous les missiles.
     for (int i = 0; i < _bulletsList.size(); i++) {
@@ -111,6 +132,34 @@ class Game {
       
     }
 
+    if (_invadersList.size() == 0) {
+      // Tous les invaders sont éliminés.
+      if (_customGame) {
+        
+        gameState = END_GAME_MENU_STATUS;
+        return;
+
+      } else {
+
+        resetTimers();
+        _levelStartTime = millis();
+
+        if (_levelNumber < 5)
+          _levelNumber++;
+
+        Board nextBoard = new Board(this, "levels/level" + _levelNumber + ".txt", new PVector(0, 0));
+
+        _moveIntervalInvader = int(0.9 * _moveIntervalInvader);
+        _maxIntervalInvaderShot = int(0.9 * _maxIntervalInvaderShot);
+        _minIntervalInvaderShot = int(0.9 * _minIntervalInvaderShot);
+
+        changeBoard(nextBoard);
+
+        surface.setTitle(MAIN_TITLE + " : " + _levelName);
+
+      }
+    }
+
     updateInvaders();
 
     // Gestion des tirs des invaders.
@@ -133,11 +182,27 @@ class Game {
       return;
     }
 
-    int randomIndex = floor(random(0, readyToShotInvaders.size()));
+    double probability = random(0, 1);
+    int missilesToShoot;
 
-    Invader selectedInvader = readyToShotInvaders.get(randomIndex);
+    if (probability <= 0.7) {
+        missilesToShoot = 1;
+    } else if (probability <= 0.92) {
+        missilesToShoot = 2;
+    } else {
+        missilesToShoot = 3;
+    }
 
-    _bulletsList.add(new Bullet(_board, TypeCell.BULLET_2, selectedInvader.getCellX(), selectedInvader.getCellY() + 1));
+    missilesToShoot = Math.min(missilesToShoot, readyToShotInvaders.size());
+
+    for (int i = 0; i < missilesToShoot; i++) {
+        int randomIndex = (int) Math.floor(random(0, readyToShotInvaders.size()));
+
+        Invader selectedInvader = readyToShotInvaders.get(randomIndex);
+        readyToShotInvaders.remove(randomIndex);
+
+        _bulletsList.add(new Bullet(_board, TypeCell.BULLET_2, selectedInvader.getCellX(), selectedInvader.getCellY() + 1));
+    }
 
 
   }
@@ -190,7 +255,7 @@ class Game {
       
     } else if (key == ' ' | (key == CODED && keyCode == UP)) {
       
-      if(millis() - _lastShotSpaceshipTime < SHOT_INTERVAL) {
+      if (millis() - _lastShotSpaceshipTime < SHOT_INTERVAL || millis() - _levelStartTime < LEVEL_START_DELAY) {
         return;
       }
 
@@ -236,7 +301,7 @@ class Game {
 
   void updateInvaders() {
 
-    if (millis() - _lastUpdateTime < MOVE_INTERVAL_INVADER) {
+    if (millis() - _lastUpdateTime < _moveIntervalInvader) {
       return;
     }
 
@@ -294,10 +359,19 @@ class Game {
 
   void moveInvadersDown() {
     
+    if (_invadersList.size() == 0) {
+      return;
+    }
+
     _invadersList.sort((a, b) -> b.getCellY() - a.getCellY());
 
     for(Invader invader : _invadersList) {
       invader.move(new PVector(0, 1));
+    }
+
+    if (_invadersList.get(0).getCellY() == _board.getNbCellsY() - 1) {
+      _pause = true;
+      gameState = END_GAME_MENU_STATUS;
     }
 
   }
@@ -318,7 +392,7 @@ class Game {
 
   
   int generateRandomShotInvaderTime() {
-    return floor(random(MIN_INTERVAL_INVADER_SHOT, MAX_INTERVAL_INVADER_SHOT + 1));
+    return floor(random(_minIntervalInvaderShot, _maxIntervalInvaderShot + 1));
   }
 
 
@@ -347,6 +421,8 @@ class Game {
       drawIt();
       _pause = true;
 
+      gameState = END_GAME_MENU_STATUS;
+
     }
 
   }
@@ -369,6 +445,36 @@ class Game {
   Board getBoard() {
     return _board;
   }
+
+  int getScore() {
+    return _score;
+  }
+
+  void resetLevelStartTime() {
+    _levelStartTime = millis();
+  }
+
+  boolean isCustomGame() {
+    return _customGame;
+  }
+
+  void setCustomGame(boolean customGame) {
+    _customGame = customGame;
+  }
+
+
+  void setMinIntervalInvaderShot(int minIntervalInvaderShot) {
+    _minIntervalInvaderShot = minIntervalInvaderShot;
+  }
+
+  void setMaxIntervalInvaderShot(int maxIntervalInvaderShot) {
+    _maxIntervalInvaderShot = maxIntervalInvaderShot;
+  }
+
+  void setMoveIntervalInvader(int moveIntervalInvader) {
+    _moveIntervalInvader = moveIntervalInvader;
+  }
+
 
 
 

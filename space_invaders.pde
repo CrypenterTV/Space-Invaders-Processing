@@ -6,6 +6,7 @@ Game game;
 
 Menu mainMenu;
 Menu pauseMenu;
+Menu endgameMenu;
 
 Images allImages;
 
@@ -27,6 +28,7 @@ void setup() {
 
   mainMenu = new MainMenu(game);
   pauseMenu = new PauseMenu(game);
+  endgameMenu = new EndGameMenu(game);
   
 }
 
@@ -48,6 +50,12 @@ void draw() {
       game.update();
       game.drawIt();
       break;
+
+    case END_GAME_MENU_STATUS:
+      endgameMenu.update();
+      endgameMenu.drawIt();
+      break;
+
   }
   
 }
@@ -55,20 +63,35 @@ void draw() {
 void keyPressed() {
 
   if (gameState == GAME_STATUS) {
+
     game.handleKey(key);
+
   } else if (gameState == PAUSE_MENU_STATUS) {
+
     pauseMenu.handleKey(key);
+
+  } else if (gameState == END_GAME_MENU_STATUS) {
+
+    endgameMenu.handleKey(key);
+
   }
 
 }
 
 void mousePressed() {
 
-  if (gameState == MAIN_MENU_STATUS) {
-    mainMenu.handleMouse(mouseButton);
-  } else if (gameState == PAUSE_MENU_STATUS) {
-    pauseMenu.handleMouse(mouseButton);
+  switch (gameState) {
+    case MAIN_MENU_STATUS:
+      mainMenu.handleMouse(mouseButton);
+      break;
+    case PAUSE_MENU_STATUS:
+      pauseMenu.handleMouse(mouseButton);
+      break;
+    case END_GAME_MENU_STATUS:
+      endgameMenu.handleMouse(mouseButton);
+      break;
   }
+
 
 }
 
@@ -78,10 +101,14 @@ void levelSelected(File selection) {
     return;
   }
 
-  gameState = GAME_STATUS;
+  
   cursor(ARROW);
 
   game.changeBoard(new Board(game, selection.getAbsolutePath(), new PVector(0, 0)));
+
+  game.setCustomGame(true);
+
+  gameState = GAME_STATUS;
 
   surface.setTitle(MAIN_TITLE + " : " + game.getLevelName());
   
@@ -100,4 +127,7 @@ void exportLevel(File selection) {
 
 void resetGame() {
   game = new Game();
+  mainMenu = new MainMenu(game);
+  pauseMenu = new PauseMenu(game);
+  endgameMenu = new EndGameMenu(game);
 }

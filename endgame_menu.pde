@@ -1,11 +1,11 @@
-class PauseMenu extends Menu {
+class EndGameMenu extends Menu {
 
     Game _game;
 
     int _menuWidth;
     int _menuHeight;
      
-    PauseMenu(Game game) {
+    EndGameMenu(Game game) {
 
         super();
 
@@ -18,19 +18,11 @@ class PauseMenu extends Menu {
 
     void initButtons() {
 
-        addButton(new Button(new PVector((width - int(1.5 * _menuWidth / 3)) / 2, height / 4 + 3 * _menuHeight / 9), int(1.5 * _menuWidth / 3), _menuHeight / 9, "Reprendre", COLOR_TEXT_BUTTON, new ButtonAction() {
-            void onClick(int mb) {
 
-                // Reprise de la partie en cours.
-                _game.resetTimers();
+        addButton(new Button(new PVector((width - int(1.5 * _menuWidth / 3)) / 2, height / 4 + 5 * _menuHeight / 9), int(1.5 * _menuWidth / 3), _menuHeight / 9, "Nouvelle Partie", COLOR_TEXT_BUTTON, new ButtonAction() {
+            void onClick(int mb) {
+                resetGame();
                 gameState = GAME_STATUS;
-
-            }
-        }));
-
-        addButton(new Button(new PVector((width - int(1.5 * _menuWidth / 3)) / 2, height / 4 + 5 * _menuHeight / 9), int(1.5 * _menuWidth / 3), _menuHeight / 9, "Sauvegarder", COLOR_TEXT_BUTTON, new ButtonAction() {
-            void onClick(int mb) {
-                selectOutput("Exporter la partie en cours : ", "exportLevel");
             }
         }));
 
@@ -54,15 +46,18 @@ class PauseMenu extends Menu {
         fill(255);
         textAlign(CENTER);
         textSize(40);
-        text("PAUSE", width / 4 + _menuWidth / 2, height / 4 + 2 * _menuHeight / 9);
+        text("PARTIE TERMINÉE", width / 4 + _menuWidth / 2, height / 4 + 2 * _menuHeight / 9);
+        
+        fill(COLOR_TEXT_BUTTON);
+        text("Score Final : " + _game.getScore(), width / 4 + _menuWidth / 2, height / 4 + 4 * _menuHeight / 9);
 
     }
 
     void handleKey(char k) {
         if (k == 27) {
             
-            // On quitte le menu pause et on reprend la partie en cours.
-            gameState = GAME_STATUS;
+            // On revient au menu principal.
+            gameState = MAIN_MENU_STATUS;
 
             key = 0;
         }

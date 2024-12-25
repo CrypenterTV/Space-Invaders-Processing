@@ -48,7 +48,7 @@ class Bullet extends GameEntity {
 
     }
 
-    if (targetCell == TypeCell.OBSTACLE) {
+    if (targetCell == TypeCell.OBSTACLE || targetCell.getType() == TypeCell.Type.INVADER) {
         setExpired();
         return false;
     }
