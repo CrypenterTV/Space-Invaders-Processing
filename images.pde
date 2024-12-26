@@ -14,6 +14,8 @@ class Images {
 
     PImage _mainTitleImage;
 
+    PImage[] _explosionImages;
+
     Images(String folderName) {
         _folderName = folderName;
         loadImages();
@@ -43,6 +45,11 @@ class Images {
         for(int i = 1; i < _backgroundImages.length + 1; i++) {
             _backgroundImages[i - 1] = loadImage(_folderName + "background" + i + ".jpg");
             _backgroundImages[i - 1].resize(width, height);
+        }
+
+        _explosionImages = new PImage[NUMBER_EXPLOSION_FRAMES];
+        for (int i = 0; i < _explosionImages.length; i++) {
+            _explosionImages[i] = loadImage(_folderName + "explosion" + (i + 1) + ".png");
         }
     }
 
@@ -85,5 +92,13 @@ class Images {
         return _mainTitleImage;
     }
 
+    PImage getExplosionImage(int index) {
+
+        if (index < 0 || index >= _explosionImages.length) {
+            return null;
+        }
+        
+        return _explosionImages[index];
+    }
 
 }

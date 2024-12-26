@@ -1,3 +1,5 @@
+// https://www.vecteezy.com/vector-art/13224424-animation-sprite-sheet-of-bomb-explosion-sequence
+
 SoundFile soundFile;
 
 int gameState;
@@ -14,7 +16,7 @@ Menu usernameInputMenu;
 Images allImages;
 Sounds allSounds;
 
-boolean soundActivated = false;
+boolean soundActivated = true;
 
 String username;
 
@@ -70,7 +72,7 @@ void draw() {
 
       if (username == null) {
         
-        if (millis() - applicationStartupTime > 500) {
+        if (millis() - applicationStartupTime > 1000) {
           gameState = USERNAME_INPUT_MENU_STATUS;
         }
 
@@ -167,6 +169,9 @@ void levelSelected(File selection) {
   gameState = GAME_STATUS;
 
   surface.setTitle(MAIN_TITLE + " : " + game.getLevelName());
+
+  stopSound(allSounds.getMainMenuMusic());
+  loopSound(allSounds.getGameMusic()); 
   
 }
 

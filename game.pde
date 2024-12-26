@@ -6,6 +6,8 @@ class Game {
   ArrayList<Bullet> _bulletsList;
   ArrayList<Invader> _invadersList;
 
+  ArrayList<Explosion> _explosionsList;
+
   String _levelName;
   
   int _lifes;
@@ -30,6 +32,8 @@ class Game {
   int _minIntervalInvaderShot;
   int _maxIntervalInvaderShot;
 
+  boolean _isEnding;
+
 
   Game() {
 
@@ -52,12 +56,16 @@ class Game {
 
     _pause = false;
 
+    _isEnding = false;
+
   }
 
   void resetBoard() {
     
     _bulletsList = new ArrayList<Bullet>();
     _invadersList = new ArrayList<Invader>();
+
+    _explosionsList = new ArrayList<Explosion>();
 
     _invadersMovingRight = true;
     
@@ -105,6 +113,27 @@ class Game {
     if (millis() - _levelStartTime < LEVEL_START_DELAY) {
       return;
     }
+
+    for (int i = 0; i < _explosionsList.size(); i++) {
+        
+      Explosion explosion = _explosionsList.get(i);
+
+      if (explosion.isFinished()) {
+          _explosionsList.remove(i);
+      }
+        
+    }
+
+
+    if (_isEnding) {
+
+      if (_explosionsList.size() == 0) {
+        endGame();
+      }
+
+      return;
+
+    }
     
     // Actualisation de tous les missiles.
     for (int i = 0; i < _bulletsList.size(); i++) {
@@ -132,26 +161,31 @@ class Game {
       
     }
 
+
+
     if (_invadersList.size() == 0) {
       // Tous les invaders sont éliminés.
       if (_customGame) {
         
-        endGame();
+        _isEnding = true;
         return;
 
       } else {
 
+
         resetTimers();
         _levelStartTime = millis();
 
-        if (_levelNumber < 5)
+        if (_levelNumber < 5) {
           _levelNumber++;
+        } else {
+          _moveIntervalInvader = int(0.9 * _moveIntervalInvader);
+          _maxIntervalInvaderShot = int(0.9 * _maxIntervalInvaderShot);
+          _minIntervalInvaderShot = int(0.9 * _minIntervalInvaderShot);
+        }
 
         Board nextBoard = new Board(this, "levels/level" + _levelNumber + ".txt", new PVector(0, 0));
 
-        _moveIntervalInvader = int(0.9 * _moveIntervalInvader);
-        _maxIntervalInvaderShot = int(0.9 * _maxIntervalInvaderShot);
-        _minIntervalInvaderShot = int(0.9 * _minIntervalInvaderShot);
 
         changeBoard(nextBoard);
 
@@ -228,6 +262,10 @@ class Game {
       bullet.drawIt();
     }
 
+    for (Explosion explosion : _explosionsList) {
+      explosion.drawIt();
+    }
+
     textAlign(LEFT);
 
     textSize(40);
@@ -245,9 +283,13 @@ class Game {
 
   void handleKey(int k) {
     
+    if (_spaceship == null) {
+      return;
+    }
+
     if (key == 'q' || (key == CODED && keyCode == LEFT)) {
       
-      _spaceship.move(new PVector(-1, 0));
+        _spaceship.move(new PVector(-1, 0));
       
     } else if (key == 'd' || (key == CODED && keyCode == RIGHT)) {
       
@@ -277,9 +319,7 @@ class Game {
           return;
         }
 
-        invader.setExpired();
-
-        addScore(SCORE_KILL);
+        invader.kill();
 
       }
 
@@ -393,7 +433,12 @@ class Game {
     }
 
     if (_invadersList.get(0).getCellY() == _board.getNbCellsY() - 1) {
-      endGame();
+      addExplosion(new Explosion(_board, _spaceship.getCellX(), _spaceship.getCellY(), 4));
+      _isEnding = true;
+      playSound(allSounds.getExplosionSound());
+
+      _spaceship.setExpired();
+      _spaceship = null;
     }
 
   }
@@ -439,7 +484,12 @@ class Game {
 
     if (_lifes <= 0) {
       
-      endGame();
+      addExplosion(new Explosion(_board, _spaceship.getCellX(), _spaceship.getCellY(), 4));
+      _isEnding = true;
+      playSound(allSounds.getExplosionSound());
+
+      _spaceship.setExpired();
+      _spaceship = null;
 
     }
 
@@ -447,8 +497,8 @@ class Game {
 
   void endGame() {
 
-    update();
-    drawIt();
+    /*update();
+    drawIt();*/
 
     _pause = true;
 
@@ -518,6 +568,10 @@ class Game {
 
   void setMoveIntervalInvader(int moveIntervalInvader) {
     _moveIntervalInvader = moveIntervalInvader;
+  }
+
+  void addExplosion(Explosion explosion) {
+    _explosionsList.add(explosion);
   }
 
 

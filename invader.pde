@@ -42,6 +42,14 @@ class Invader extends GameEntity {
     _board.setCell(_cellX, _cellY, TypeCell.EMPTY);
   }
 
+  void kill() {
+
+    setExpired();
+    _board.getGame().addScore(SCORE_KILL);
+    _board.getGame().addExplosion(new Explosion(_board, _cellX, _cellY, 1.4));
+    playSound(allSounds.getExplosionSound());
+  }
+
 
   boolean isReadyToShot() {
 

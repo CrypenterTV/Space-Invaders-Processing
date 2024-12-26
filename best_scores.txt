@@ -1,7 +1,30 @@
+a;0
+salut;0
+jean françois copé;10
+a;10
+bloub;10
+kjh;40
+ryyr;40
+qdzmoih;40
+jean françois copé;50
+m;80
+jean;80
+qdzmoih;100
+qdzmoih;140
 test;200
+qdzmoih;320
+djhqjhdq;480
+djhqjhdq;780
+djhqjhdq;1750
+Crypenter;2200
+a;2250
+Crypenter;2500
+Test 1234;2720
+a;4260
 Issou974;9600
 DarkBlade;14000
 Ameno1234;17655
 Crypenter;35000
 FrançoisPignon;40000
 PatateDouce78;48000
+bloub;2640

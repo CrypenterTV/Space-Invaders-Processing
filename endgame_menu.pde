@@ -64,6 +64,7 @@ class EndGameMenu extends Menu {
             // On revient au menu principal.
             gameState = MAIN_MENU_STATUS;
             loopSound(allSounds.getMainMenuMusic());
+            stopSound(allSounds.getGameMusic());
             key = 0;
         }
     }

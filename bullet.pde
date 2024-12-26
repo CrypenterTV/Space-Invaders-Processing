@@ -30,11 +30,8 @@ class Bullet extends GameEntity {
 
         assert invader != null;
 
-        _board.setCell(newCellX, newCellY, TypeCell.EMPTY); 
-        invader.setExpired();
+        invader.kill();
         setExpired();
-
-        _board.getGame().addScore(SCORE_KILL);
 
         return false;
     }

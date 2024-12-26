@@ -21,7 +21,7 @@ class MainMenu extends Menu {
                 cursor(ARROW);
                 surface.setTitle(MAIN_TITLE + " : " + _game.getLevelName());
                 allSounds.getMainMenuMusic().stop();
-                playSound(allSounds.getGameMusic());
+                loopSound(allSounds.getGameMusic());
             }
         }));
 
@@ -30,7 +30,6 @@ class MainMenu extends Menu {
             void onClick(int mb) {
                 resetGame();
                 selectInput("Sélectionnez le niveau :", "levelSelected");
-                allSounds.getMainMenuMusic().stop();
             }
         }));
 
@@ -58,10 +57,14 @@ class MainMenu extends Menu {
         textSize(40);
         fill(COLOR_TEXT_BUTTON);
         textAlign(CENTER);
-        text("Meilleurs Scores :", 1.1 * 4 * width / 6, 3 * height / 9 + 0.5 * height / 9);
+        text("Meilleurs Scores :", 1.12 * 4 * width / 6, 3 * height / 9 + 0.5 * height / 9);
         
         textSize(30);
         for (int i = 0; i < 5; i++) {
+
+            if (i >= scoresList.size()) {
+                break;
+            }
 
             int index = scoresList.size() - i - 1;
             text("#" + (i + 1) + " " + usernamesList.get(index) + " : " + scoresList.get(index), 1.12 * 4 * width / 6, 3 * height / 9 + 0.5 * height / 9 + (i + 1) * 60);

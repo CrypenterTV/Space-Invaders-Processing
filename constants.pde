@@ -38,3 +38,8 @@ final int SHOT_INTERVAL = 500;
 
 final int MIN_INTERVAL_INVADER_SHOT = 1000;
 final int MAX_INTERVAL_INVADER_SHOT = 2000;
+
+// Paramètres de l'animation d'explosion
+
+final int NUMBER_EXPLOSION_FRAMES = 7;
+final int EXPLOSION_ANIMATION_SPEED = 3;
