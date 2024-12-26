@@ -228,8 +228,6 @@ class Board {
       output.append(line);
     }
 
-    println(output.toString());
-
     String[] outputLines = { output.toString() };
 
     saveStrings(filePath, outputLines);

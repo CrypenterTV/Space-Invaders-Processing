@@ -19,6 +19,10 @@ class Spaceship extends GameEntity {
 
   boolean beforeMove(int newCellX, int newCellY) {
 
+    if (newCellX < 0 || newCellY < 0 || newCellX >= _board.getNbCellsX() || newCellY >= _board.getNbCellsY()) {
+      return false;
+    }
+    
     if (_board.getCell(newCellX, newCellY) == TypeCell.BULLET_2) {
 
       Bullet bullet = _board.getGame().getBulletFromCell(newCellX, newCellY);

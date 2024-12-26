@@ -56,6 +56,7 @@ class Invader extends GameEntity {
     }
 
     for (int y = _cellY + 1; y < _board.getNbCellsY(); y++) {
+
       if (_board.getCell(_cellX, y).getType() == TypeCell.Type.INVADER) {
         return false;
       }

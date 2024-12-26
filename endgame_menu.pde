@@ -23,13 +23,18 @@ class EndGameMenu extends Menu {
             void onClick(int mb) {
                 resetGame();
                 gameState = GAME_STATUS;
+                stopSound(allSounds.getGameMusic());
+                loopSound(allSounds.getGameMusic());
             }
         }));
 
         addButton(new Button(new PVector((width - int(1.5 * _menuWidth / 3)) / 2, height / 4 + 7 * _menuHeight / 9), int(1.5 * _menuWidth / 3), _menuHeight / 9, "Menu Principal", COLOR_TEXT_BUTTON, new ButtonAction() {
             void onClick(int mb) {
+                //resetGame();
                 gameState = MAIN_MENU_STATUS;
                 surface.setTitle(MAIN_TITLE);
+                stopSound(allSounds.getGameMusic());
+                loopSound(allSounds.getMainMenuMusic());
             }
         }));
 
@@ -58,7 +63,7 @@ class EndGameMenu extends Menu {
             
             // On revient au menu principal.
             gameState = MAIN_MENU_STATUS;
-
+            loopSound(allSounds.getMainMenuMusic());
             key = 0;
         }
     }

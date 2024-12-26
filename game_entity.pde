@@ -45,7 +45,7 @@ abstract class GameEntity {
         if (newCellX < 0 || newCellY < 0 || newCellX >= _board.getNbCellsX() || newCellY >= _board.getNbCellsY()) {
             return false;
         }
-
+        
         if (_board.getCell(newCellX, newCellY) != TypeCell.EMPTY && _board.getCell(newCellX, newCellY).getType() != TypeCell.Type.BULLET) {
             return false;
         }

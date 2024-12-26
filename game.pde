@@ -76,7 +76,7 @@ class Game {
     for (int x = 0; x < _board.getNbCellsX(); x++) {
 
       for (int y = 0; y < _board.getNbCellsY(); y++) {
-
+        
         TypeCell typeCell = _board.getCell(x, y);
 
         if (typeCell == TypeCell.SPACESHIP) {
@@ -136,7 +136,7 @@ class Game {
       // Tous les invaders sont éliminés.
       if (_customGame) {
         
-        gameState = END_GAME_MENU_STATUS;
+        endGame();
         return;
 
       } else {
@@ -261,7 +261,30 @@ class Game {
 
       _lastShotSpaceshipTime = millis();
 
+      playSound(allSounds.getBulletSound());
+
+      TypeCell cellUp = _board.getCell(_spaceship.getCellX(), _spaceship.getCellY() - 1);
+
+      if (cellUp == TypeCell.OBSTACLE) {
+        return;
+      }
+
+      if (cellUp.getType() == TypeCell.Type.INVADER) {
+        
+        Invader invader = getInvaderFromCell(_spaceship.getCellX(), _spaceship.getCellY() - 1);
+
+        if (invader == null) {
+          return;
+        }
+
+        invader.setExpired();
+
+        addScore(SCORE_KILL);
+
+      }
+
       _bulletsList.add(new Bullet(_board, TypeCell.BULLET_1, _spaceship.getCellX(), _spaceship.getCellY() - 1));
+      
     
     } else if (key == 27) { // Echap
       gameState = PAUSE_MENU_STATUS;
@@ -370,8 +393,7 @@ class Game {
     }
 
     if (_invadersList.get(0).getCellY() == _board.getNbCellsY() - 1) {
-      _pause = true;
-      gameState = END_GAME_MENU_STATUS;
+      endGame();
     }
 
   }
@@ -417,13 +439,36 @@ class Game {
 
     if (_lifes <= 0) {
       
-      update();
-      drawIt();
-      _pause = true;
-
-      gameState = END_GAME_MENU_STATUS;
+      endGame();
 
     }
+
+  }
+
+  void endGame() {
+
+    update();
+    drawIt();
+
+    _pause = true;
+
+    gameState = END_GAME_MENU_STATUS;
+
+    String[] fileContent = new String[scoresList.size() + 1];
+
+    for (int i = 0; i < scoresList.size(); i++) {
+
+      fileContent[i] = usernamesList.get(i) + ";" + scoresList.get(i); 
+
+    }
+
+    fileContent[scoresList.size()] = username + ";" + _score;
+
+    saveStrings("best_scores.txt", fileContent);
+
+    scoresList.add(_score);
+    usernamesList.add(username);
+    sortScores();
 
   }
 

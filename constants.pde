@@ -3,6 +3,7 @@ final int MAIN_MENU_STATUS = 0;
 final int PAUSE_MENU_STATUS = 1;
 final int GAME_STATUS = 2;
 final int END_GAME_MENU_STATUS = 3;
+final int USERNAME_INPUT_MENU_STATUS = 4;
 
 // Paramètres de base
 final int START_LIFES = 3;
@@ -26,7 +27,7 @@ final color COLOR_PAUSE_MENU_BG = color(43, 41, 41);
 final color COLOR_TEXT_BUTTON = color(253, 255, 38);
 
 // Intervalles de temps
-final int LEVEL_START_DELAY = 2000;
+final int LEVEL_START_DELAY = 3000;
 
 final int MOVE_INTERVAL_BULLET_SPACESHIP = 30;
 final int MOVE_INTERVAL_BULLET_INVADER = 50;

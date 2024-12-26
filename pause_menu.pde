@@ -38,6 +38,8 @@ class PauseMenu extends Menu {
             void onClick(int mb) {
                 gameState = MAIN_MENU_STATUS;
                 surface.setTitle(MAIN_TITLE);
+                stopSound(allSounds.getGameMusic());
+                loopSound(allSounds.getMainMenuMusic());
             }
         }));
 
