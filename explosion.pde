@@ -1,50 +1,55 @@
 class Explosion {
 
-    Board _board;
+  Board _board;
 
-    int _cellX;
-    int _cellY;
+  Position _position;
 
-    int _frameRateCount;
+  int _cellX;
+  int _cellY;
 
-    int _startFrameCount;
+  int _frameRateCount;
 
-    float _sizeFactor;
+  int _startFrameCount;
 
-    Explosion(Board board, int cellX, int cellY, float sizeFactor) {
-        _board = board;
-        _cellX = cellX;
-        _cellY = cellY;
-        _frameRateCount = 0;
-        _startFrameCount = 0;
-        _sizeFactor = sizeFactor;
+  float _sizeFactor;
+
+  Explosion(Board board, int cellX, int cellY, float sizeFactor) {
+    _board = board;
+    _cellX = cellX;
+    _cellY = cellY;
+    _position = board.getCellCenter(cellX, cellY);
+    _frameRateCount = 0;
+    _startFrameCount = 0;
+    _sizeFactor = sizeFactor;
+  }
+
+  void drawIt() {
+
+    // Si l'animation est terminée, on ne dessine rien.
+    if (isFinished()) {
+      return;
     }
 
-    void drawIt() {
+    // Calcul du nombre d'images écoulées selon la vitesse de l'animation.
+    int elapsedFrames = _frameRateCount / EXPLOSION_ANIMATION_SPEED;
 
-        if (isFinished()) {
-            return;
-        }
+    // L'animation d'explosion est composée de 7 images, on sélectionne la bonne et on l'affiche avec un facteur de taille donné.
+    image(allImages.getExplosionImage(elapsedFrames), _position.x, _position.y, _sizeFactor * _board.getCellSizeX(), _sizeFactor * _board.getCellSizeY());
 
-        int elapsedFrames = _frameRateCount / EXPLOSION_ANIMATION_SPEED;
-        if (elapsedFrames < NUMBER_EXPLOSION_FRAMES) {
+    _frameRateCount++;
 
-            PVector position = _board.getCellCenter(_cellX, _cellY);
-            image(allImages.getExplosionImage(elapsedFrames), position.x, position.y, _sizeFactor * _board.getCellSizeX(), _sizeFactor * _board.getCellSizeY());
 
-            _frameRateCount++;
-        }
-    }
+  }
 
-    boolean isFinished() {
-        return _frameRateCount / EXPLOSION_ANIMATION_SPEED >= NUMBER_EXPLOSION_FRAMES;
-    }
+  boolean isFinished() {
+    return _frameRateCount / EXPLOSION_ANIMATION_SPEED >= NUMBER_EXPLOSION_FRAMES;
+  }
 
-    int getCellX() {
-        return _cellX;
-    }
+  int getCellX() {
+    return _cellX;
+  }
 
-    int getCellY() {
-        return _cellY;
-    }
+  int getCellY() {
+    return _cellY;
+  }
 }

@@ -1,63 +1,78 @@
 public enum TypeCell {
-    EMPTY,
-    SPACESHIP,
-    OBSTACLE,
-    BULLET_1(Type.BULLET),
-    BULLET_2(Type.BULLET),
-    INVADER_1(Type.INVADER),
-    INVADER_2(Type.INVADER),
-    INVADER_3(Type.INVADER),
-    INVADER_4(Type.INVADER),
-    INVADER_5(Type.INVADER),
-    INVADER_6(Type.INVADER),
-    INVADER_7(Type.INVADER);
+  EMPTY,
+  SPACESHIP,
+  OBSTACLE,
+  BULLET_1(Type.BULLET),
+  BULLET_2(Type.BULLET),
+  INVADER_1(Type.INVADER),
+  INVADER_2(Type.INVADER),
+  INVADER_3(Type.INVADER),
+  INVADER_4(Type.INVADER),
+  INVADER_5(Type.INVADER),
+  INVADER_6(Type.INVADER),
+  INVADER_7(Type.INVADER);
 
-    Type _type;
+  Type _type;
 
-    TypeCell() {
-        _type = null;
+  TypeCell() {
+    _type = null;
+  }
+
+  TypeCell(Type type) {
+    _type = type;
+  }
+
+  Type getType() {
+
+    if (_type != null) {
+
+      return _type;
+
+    } else {
+
+      return Type.valueOf(this.name());
+
     }
 
-    TypeCell(Type type) {
-        _type = type;
+  }
+
+  // Récupération du numéro de l'invader (si c'est un invader).
+  int getNumber() {
+
+    if (this.name().startsWith("INVADER_")) {
+
+      String numberPart = this.name().substring(8);
+      return Integer.parseInt(numberPart);
+
     }
 
-    Type getType() {
-        if (_type != null) {
-          return _type;
-        } else {
-          return Type.valueOf(this.name());
-        }
-    }
+    return -1;
+  }
 
-    int getNumber() {
-      if (this.name().startsWith("INVADER_")) {
-          String numberPart = this.name().substring(8); 
-          return Integer.parseInt(numberPart);
-      }
-      return -1;
-    }
+  // "Sous-Enum" pour les types de cellules associés.
+  enum Type {
+    EMPTY, SPACESHIP, OBSTACLE, BULLET, INVADER;
+  }
 
-    enum Type {
-        EMPTY, SPACESHIP, OBSTACLE, BULLET, INVADER;
-    }
 }
 
-
+// Classe de gestion du plateau de jeu.
 class Board {
-  
-  TypeCell _cells[][];
+
+  TypeCell _cells[][]; // Tableau principal contenu le type de chaque cellule en temps réel.
+
   PVector _position;
+
   Game _game;
-  
+
   int _nbCellsX;
   int _nbCellsY;
-  
+
   float _cellSizeX;
   float _cellSizeY;
 
   String _fileName;
-  
+
   Board(Game game, String fileName, PVector pos) {
 
     _game = game;
@@ -66,131 +81,130 @@ class Board {
 
     _position = pos.copy();
 
-    loadFromFile();
-    
-    _cellSizeX = (float) width / _nbCellsX;
-    _cellSizeY = (float) height / _nbCellsY; 
+    loadFromFile(); // Chargement du fichier de niveau.
 
+    // Calcul des dimensions des cellules en fonction de la taille de la fenêtre (dynamique et adaptatif).
+    _cellSizeX = (float) width / _nbCellsX; 
+    _cellSizeY = (float) height / _nbCellsY;
   }
 
 
-
+  // Fonction permettant de charger un fichier de niveau.
   void loadFromFile() {
-    
+
     try {
-      
+
       String[] lines = loadStrings(_fileName);
 
-      // Ne pas prendre en compte les lignes vides 
+      // On ne prend pas en compte les lignes vides dans la taille du niveau.
       int initialLength = lines.length - 1;
       for (String line : lines) {
+
         if (line.length() == 0) {
           initialLength--;
         }
+
       }
 
       assert lines.length > 1;
 
-      _game.setLevelName(lines[0]);
+      _game.setLevelName(lines[0]); // La première ligne contient l'intitulé du niveau.
 
       _nbCellsY = initialLength;
       _nbCellsX = lines[1].length();
 
-      _cells = new TypeCell[_nbCellsX][_nbCellsY];
-      
-      if (lines.length - 1 != _nbCellsY) {
-        println("Le fichier " + _fileName + " ne correspond pas aux dimensions du tableau.");
-        return;
-      }
-      
+      _cells = new TypeCell[_nbCellsX][_nbCellsY]; // On initialise notre tableau principal avec les bonnes dimensions.
+
 
       for (int y = 0; y < _nbCellsY; y++) {
 
-          if (lines[y + 1].length() != _nbCellsX) {
-            println("La ligne " + (y - 1) + " du fichier " + _fileName + " a une longueur incorrecte.");
-            return;
+        if (lines[y + 1].length() != _nbCellsX) { // Si la longueur de la ligne est différente de la largeur du plateau, on arrête le chargement.
+          println("La ligne " + (y - 1) + " du fichier " + _fileName + " a une longueur incorrecte.");
+          return;
+        }
+
+
+        for (int x = 0; x < _nbCellsX; x++) {
+
+          // On analyse chaque caractère de la ligne pour déterminer le type de cellule.
+          char loopedChar = lines[y + 1].charAt(x);
+
+          // Les différents types d'invaders sont représentés par des chiffres de 1 à 7.
+          if (loopedChar >= '1' && loopedChar <= '7') {
+            _cells[x][y] = TypeCell.valueOf("INVADER_" + loopedChar);
+            continue;
           }
 
-
-          for (int x = 0; x < _nbCellsX; x++) {
-            
-              char loopedChar = lines[y + 1].charAt(x);
-
-              if (loopedChar >= '1' && loopedChar <= '7') {
-                _cells[x][y] = TypeCell.valueOf("INVADER_" + loopedChar);
-                continue;
-              }
-
-              switch (loopedChar) {
-                  case 'X':
-                    _cells[x][y] = TypeCell.OBSTACLE;
-                    break;
-                  case 'S':
-                    _cells[x][y] = TypeCell.SPACESHIP;
-                    break;
-                  case 'B':
-                    _cells[x][y] = TypeCell.BULLET_1;
-                    break;
-                  case 'D':
-                    _cells[x][y] = TypeCell.BULLET_2;
-                    break;
-                  default:
-                    _cells[x][y] = TypeCell.EMPTY;
-              }
-
-          }
-
+          // Autres types de cellules.
+          switch (loopedChar) {
+            case 'X':
+              _cells[x][y] = TypeCell.OBSTACLE;
+              break;
+            case 'S':
+              _cells[x][y] = TypeCell.SPACESHIP;
+              break;
+            case 'B':
+              _cells[x][y] = TypeCell.BULLET_1;
+              break;
+            case 'D':
+              _cells[x][y] = TypeCell.BULLET_2;
+              break;
+            default:
+              _cells[x][y] = TypeCell.EMPTY;
+            }
+        }
 
       }
-      
-    } catch (Exception e) {
-    
-      println("Erreur de lecture du fichier." + e.toString());
-      exit();
 
     }
+    catch (Exception e) {
+      // Si le chargement échoue, on arrête le programme.
+      println("Erreur de lecture du fichier." + e.toString());
+      exit();
+    }
+  }
 
-  }  
-  
 
-
+  // Récupération des coordonnées du centre d'une cellule de la grille prenant en compte la taille des cellules.
   PVector getCellCenter(int x, int y) {
     return new PVector( _position.x + x * _cellSizeX + (_cellSizeX * 0.5),
-                        _position.y + y * _cellSizeY + (_cellSizeY * 0.5));
+      _position.y + y * _cellSizeY + (_cellSizeY * 0.5));
   }
-  
-  
+
+
   void drawIt() {
-  
+
     rectMode(CORNER);
 
     for (int x = 0; x < _cells.length; x++) {
 
-        for (int y = 0; y < _cells[x].length; y++) {
+      for (int y = 0; y < _cells[x].length; y++) {
 
-            if (_cells[x][y] == TypeCell.OBSTACLE) {
-              imageMode(CORNER);
-              image(allImages.getObstacleImage(), x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
-            }
-
+        if (_cells[x][y] == TypeCell.OBSTACLE) { // On dessine l'obstacle.
+          imageMode(CORNER);
+          image(allImages.getObstacleImage(), x * _cellSizeX, y * _cellSizeY, _cellSizeX, _cellSizeY);
         }
-    }
-  }
-  
+      }
 
+    }
+
+  }
+
+  // Fonction permettant de sauvegarder l'état du board dans un fichier sous le bon format.
   void exportToFile(String filePath, String gameName) {
 
-    StringBuilder output = new StringBuilder();
+    StringBuilder output = new StringBuilder(); // On crée un StringBuilder pour construire le contenu du fichier.
 
-    output.append(gameName);
+    output.append(gameName); // Première ligne = nom du niveau.
     output.append("\n");
 
-    for (int y = 0; y < _nbCellsY; y++) {
-      
+    // On parcourt chaque cellule du plateau pour les ajouter au fichier (procédé invere du chargement).
+    for (int y = 0; y < _nbCellsY; y++) { 
+
       StringBuilder line = new StringBuilder();
 
       for (int x = 0; x < _nbCellsX; x++) {
-        
+
         TypeCell currentCell = _cells[x][y];
 
         if (currentCell.getType().equals(TypeCell.Type.INVADER)) {
@@ -218,7 +232,6 @@ class Board {
           line.append("E");
 
         }
-
       }
 
       if (y < _nbCellsY - 1) {
@@ -228,25 +241,24 @@ class Board {
       output.append(line);
     }
 
-    String[] outputLines = { output.toString() };
+    String[] outputLines = { output.toString() }; // Processing oblige à passer un tableau de String pour la fonction saveStrings.
 
     saveStrings(filePath, outputLines);
   }
 
+
+  // Fonction de déboogage permettant d'afficher le contenu du plateau dans la console.
   void displayBoard() {
 
-    for(int x = 0; x < _nbCellsX; x++) {
+    for (int x = 0; x < _nbCellsX; x++) {
 
-      for(int y = 0; y < _nbCellsY; y++) {
+      for (int y = 0; y < _nbCellsY; y++) {
 
         print(_cells[x][y] + " ");
-
       }
 
       println("\n");
-
     }
-
   }
 
 
@@ -258,23 +270,23 @@ class Board {
   void setCell(int x, int y, TypeCell value) {
     _cells[x][y] = value;
   }
-  
+
   TypeCell[][] getCells() {
     return _cells;
   }
-  
+
   int getNbCellsX() {
     return _nbCellsX;
   }
-  
+
   int getNbCellsY() {
     return _nbCellsY;
   }
-  
+
   float getCellSizeX() {
     return _cellSizeX;
   }
-  
+
   float getCellSizeY() {
     return _cellSizeY;
   }
@@ -282,5 +294,4 @@ class Board {
   Game getGame() {
     return _game;
   }
-  
 }
