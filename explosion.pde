@@ -2,14 +2,12 @@ class Explosion {
 
   Board _board;
 
-  Position _position;
+  PVector _position;
 
   int _cellX;
   int _cellY;
 
   int _frameRateCount;
-
-  int _startFrameCount;
 
   float _sizeFactor;
 
@@ -19,7 +17,6 @@ class Explosion {
     _cellY = cellY;
     _position = board.getCellCenter(cellX, cellY);
     _frameRateCount = 0;
-    _startFrameCount = 0;
     _sizeFactor = sizeFactor;
   }
 

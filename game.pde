@@ -400,7 +400,7 @@ class Game {
       return;
     }
 
-    // Tri des invaders par ordre croissant de leur position en x pour pouvoir les bouger dans le bon ordre.
+    // Tri des invaders par ordre décroissant de leur position en x pour pouvoir les bouger dans le bon ordre.
     _invadersList.sort((a, b) -> b.getCellX() - a.getCellX()); 
 
     if (_invadersList.get(0).getCellX() >= _board.getNbCellsX() - 1) {

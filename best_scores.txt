@@ -1,3 +1,5 @@
-François Pignon;5500
+Marlène Sasseur;750
+Lucien Cheval;1300
+Pierre Brochant;2600
 Juste Leblanc;4575
-Dark XX 87;2600
+François Pignon 87;5500
